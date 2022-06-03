@@ -20,20 +20,7 @@ namespace AluraFlix.Data
                 .HasForeignKey(vidoe => vidoe.CategoriaId);
 
         }
-        public DbSet<Video> Videos { get; set; }
-        public DbSet<Categoria> Categorias { get; set; }
-    }
-
-    //Configurando banco de dados
-    public class BloggingContextFactory : IDesignTimeDbContextFactory<AppDbContext>
-    {
-        public AppDbContext CreateDbContext(string[] args)
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-
-            optionsBuilder.UseMySql("Server=localhost;User ID=root;Password=ads.Microsoft2;Database=AluraFlix", ServerVersion.Parse("8.0.29"));
-
-            return new AppDbContext(optionsBuilder.Options);
-        }
+        public DbSet<Video> Videos { get; private set; }
+        public DbSet<Categoria> Categorias { get; private set; }
     }
 }

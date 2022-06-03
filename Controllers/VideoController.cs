@@ -4,6 +4,7 @@ using AluraFlix.Models;
 using AluraFlix.Profiles;
 using AluraFlix.Services;
 using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ namespace AluraFlix.Controllers
             _context = context;
         }
 
+
         [HttpPost]
         //Adiciona Video ao banco de dados
         public IActionResult AdicionaVideo([FromBody] CreateVideoDto createDto)
@@ -41,6 +43,9 @@ namespace AluraFlix.Controllers
             }
             return NotFound("Url incessivel");
         }
+
+
+
         [HttpGet("take/{take:int}/page/{page:int}")]
         //Retorna todos os videos criados
         public async Task<IActionResult> GetVideos([FromQuery] string categoria, [FromRoute] int page = 0, [FromRoute] int take = 5)
@@ -60,20 +65,7 @@ namespace AluraFlix.Controllers
             return VerificaQuery(categoria, todos, total);
         }
 
-        private IActionResult VerificaQuery(string categoria, List<Video> todos, int total)
-        {
-            if (categoria != null && _context.Categorias.All(c => c.Titulo != categoria))
-            {
-                return NotFound("categoria não encotrada");
-            };
-
-            return Ok(new
-            {
-                data = total,
-                todos
-            });
-        }
-
+        //Criando pagina free para usuarios   
         [HttpGet("/Video/Free")]
         public async Task<IActionResult> GetVideosFree()
         {
@@ -93,6 +85,7 @@ namespace AluraFlix.Controllers
             return Ok(readDto);
         }
 
+
         [HttpPut("{id}")]
         //Atualiza video por id 
         public IActionResult AtualizaVideo(int id, UpdateVideoDto updateDto)
@@ -102,6 +95,7 @@ namespace AluraFlix.Controllers
             if (resultado.IsFailed) return NotFound();
             return NoContent();
         }
+
 
         [HttpDelete("{id}")]
         //Deleta video por id 
@@ -136,6 +130,20 @@ namespace AluraFlix.Controllers
                                 .Skip(0)
                                 .Take(5)
                                 .ToListAsync();
+        }
+        //Verifica query
+        private IActionResult VerificaQuery(string categoria, List<Video> todos, int total)
+        {
+            if (categoria != null && _context.Categorias.All(c => c.Titulo != categoria))
+            {
+                return NotFound("categoria não encotrada");
+            };
+
+            return Ok(new
+            {
+                data = total,
+                todos
+            });
         }
     }
 }

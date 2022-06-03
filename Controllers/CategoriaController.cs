@@ -1,6 +1,7 @@
 ﻿using AluraFlix.Data.Dtos.CategoriaDto;
 using AluraFlix.Services;
 using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace AluraFlix.Controllers
             _categoriaService = categoriaService;
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         //Adiciona Video ao banco de dados
         public IActionResult AdicionaCategoria([FromBody] CreateCategoriaDto createDto)
@@ -28,6 +30,9 @@ namespace AluraFlix.Controllers
             return CreatedAtAction(nameof(GetCategoriaPorId), new { Id = readDto.Id }, readDto);
 
         }
+
+
+        [Authorize(Roles = "admin")]
         [HttpGet]
         //Retorna todos os categorias criadas
         public IActionResult GetCategorias()
@@ -39,6 +44,8 @@ namespace AluraFlix.Controllers
 
         }
 
+
+        [Authorize(Roles = "admin, regular")]
         [HttpGet("{id}")]
         //Pega categoria por id
         public IActionResult GetCategoriaPorId(int id)
@@ -49,6 +56,8 @@ namespace AluraFlix.Controllers
             return Ok(readDto);
         }
 
+
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         //Atualiza categoria por id 
         public IActionResult AtualizaCategoria(int id, UpdateCategoriaDto updateDto)
@@ -58,7 +67,7 @@ namespace AluraFlix.Controllers
             if (resultado.IsFailed) return NotFound();
             return NoContent();
         }
-
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         //Deleta categoira por id 
         public IActionResult DeletaVideo(int id)
